@@ -3,6 +3,7 @@ package com.blurdel.rest.controllers;
 import com.blurdel.rest.model.Person;
 import com.blurdel.rest.services.IPersonService;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+
 
 @Path("/person")
 public class PersonController {
@@ -71,6 +73,9 @@ public class PersonController {
     @Operation(summary = "Updates an existing Person by id")
     public Response update(@PathParam("id") final Long id, final Person payload) {
         LOG.info("PersonController PUT called for id {} with payload {}", id, payload.toString());
+        if (!id.equals(payload.id())) {
+            throw new BadRequestException("pathParam.id should match payload.id");
+        }
         Optional<Person> updated = service.update(payload);
         if (updated.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();

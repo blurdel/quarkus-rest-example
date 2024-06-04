@@ -38,9 +38,12 @@ public class MemoryDataStore implements IDataStore {
 
     @Override
     public Optional<Person> update(final Person person) {
-        mMap.remove(person.id());
-        mMap.put(person.id(), person);
-        return Optional.of(person);
+        if (mMap.containsKey(person.id())) {
+            mMap.remove(person.id());
+            mMap.put(person.id(), person);
+            return Optional.of(person);
+        }
+        return Optional.empty();
     }
 
     @Override
